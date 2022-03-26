@@ -1,12 +1,12 @@
 from kinopoisk_unofficial.kinopoisk_api_client import KinopoiskApiClient
 from kinopoisk_unofficial.request.films.film_request import FilmRequest
 from constants import TOKEN
-import numpy as np
 from sqlalchemy import create_engine, DateTime, func, Boolean, Float, PickleType
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, backref, Query
+import time
 
 Base = declarative_base()
 
@@ -14,10 +14,9 @@ Base = declarative_base()
 class FilmDataBase(Base):
     __tablename__ = 'Kinopoisk_Films'
     id = Column(Integer, primary_key=True)
-    kinopoisk_Id = Column(Integer, primary_key=True)
+    kinopoisk_Id = Column(Integer)
     imdb_id = Column(Integer)
     name_ru = Column(String)
-    name_en = Column(String)
     name_original = Column(String)
     poster_url = Column(String)
     rating_imdb = Column(Float)
@@ -61,8 +60,8 @@ class DataBaseAddition(object):
 
         film = FilmDataBase(response)
 
-        lst = session.query(FilmDataBase).filter(FilmDataBase.kinopoisk_Id == film.kinopoisk_Id)
-        if len(lst) == 0:
+        lst = session.query(FilmDataBase).filter(FilmDataBase.kinopoisk_Id == film.kinopoisk_Id).first()
+        if lst == None:
             session.add(film)
             session.add(film)
             session.commit()
@@ -75,8 +74,9 @@ class DataBaseAddition(object):
 def main():
     api_client = KinopoiskApiClient(TOKEN)
     filmDB = DataBaseAddition()
-    for i in range(5, 6):
+    for i in range(300, 2000):
         try:
+            time.sleep(1/20.0)
             request = FilmRequest(i)
             response = api_client.films.send_film_request(request)
             response.film.genres
