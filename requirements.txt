@@ -1,4 +1,3 @@
 kinopoisk-api-unofficial-client
 numpy
 SQLAlchemy
-constants

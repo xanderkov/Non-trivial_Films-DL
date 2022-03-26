@@ -74,9 +74,9 @@ class DataBaseAddition(object):
 def main():
     api_client = KinopoiskApiClient(TOKEN)
     filmDB = DataBaseAddition()
-    for i in range(300, 2000):
+    for i in range(1998, 3000):
         try:
-            time.sleep(1/20.0)
+            time.sleep(0.1)
             request = FilmRequest(i)
             response = api_client.films.send_film_request(request)
             response.film.genres
