@@ -1,3 +1,4 @@
-pip install kinopoisk-api-unofficial-client
-pip install numpy
-pip install SQLAlchemy
+kinopoisk-api-unofficial-client
+numpy
+SQLAlchemy
+constants
