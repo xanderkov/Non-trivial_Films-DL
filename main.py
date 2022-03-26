@@ -11,10 +11,10 @@ from sqlalchemy.orm import sessionmaker, relationship, backref, Query
 Base = declarative_base()
 
 
-
 class FilmDataBase(Base):
-    __tablename__='Kinopoisk_Films'
+    __tablename__ = 'Kinopoisk_Films'
     id = Column(Integer, primary_key=True)
+    kinopoisk_Id = Column(Integer, primary_key=True)
     imdb_id = Column(Integer)
     name_ru = Column(String)
     name_en = Column(String)
@@ -30,11 +30,11 @@ class FilmDataBase(Base):
     web_url = Column(String)
     slogan = Column(String)
     description = Column(String)
-    
+
     def __init__(self, response):
         self.imdb_id = response.film.imdb_id
+        self.kinopoisk_Id = response.film.kinopoisk_id
         self.name_ru = response.film.name_ru
-        self.name_en = response.film.name_en
         self.name_original = response.film.name_original
         self.poster_url = response.film.poster_url
         self.rating_imdb = response.film.rating_imdb
@@ -50,39 +50,44 @@ class FilmDataBase(Base):
 
 
 class DataBaseAddition(object):
-    
+
     def __init__(self):
         self.meta = MetaData()
         self.engine = create_engine('sqlite:///films.db', echo=False)
         Base.metadata.create_all(self.engine)
-        
-    
+
     def addFilm(self, response):
         session = sessionmaker(bind=self.engine)()
-        film = FilmDataBase(response)
-        
-        session.add(film)
-        session.commit()
-        session.close()
 
-    
-    
+        film = FilmDataBase(response)
+
+        lst = session.query(FilmDataBase).filter(FilmDataBase.kinopoisk_Id == film.kinopoisk_Id)
+        if len(lst) == 0:
+            session.add(film)
+            session.add(film)
+            session.commit()
+            return True
+
+        session.close()
+        return False
+
 
 def main():
-    
     api_client = KinopoiskApiClient(TOKEN)
     filmDB = DataBaseAddition()
-    for i in range(1000, 2000):
+    for i in range(5, 6):
         try:
             request = FilmRequest(i)
             response = api_client.films.send_film_request(request)
             response.film.genres
-            filmDB.addFilm(response)
-            print('Checked {}'.format(i))
+            if filmDB.addFilm(response):
+                print('Added {}'.format(response.film.kinopoisk_id))
+            else:
+                print('Is in the database {}'.format(response.film.kinopoisk_id))
+
         except Exception as error:
             print('Id is not capable ' + str(error))
-        
-          
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     main()
