@@ -45,7 +45,48 @@ class FilmDataBase(Base):
         self.description = response.film.description
 
 
-class DataBaseFunctions(object):
+class KinopoiskId(Base):
+    __tablename__ = 'Kinopoisk_Id'
+    id = Column(Integer, primary_key=True)
+    kinopoisk_id = Column(Integer)
+    status = Column(String)
+
+    def __init__(self, kinopoisk_id, status):
+        self.kinopoisk_id = kinopoisk_id
+        self.status = status
+
+
+class DataFunId(object):
+
+    def __init__(self):
+        self.meta = MetaData()
+        self.engine = create_engine('sqlite:///Database/films.db', echo=False)
+        Base.metadata.create_all(self.engine)
+
+    def add_link(self, kinopoisk_id, status):
+        session = sessionmaker(bind=self.engine)()
+
+        id = KinopoiskId(kinopoisk_id, status)
+
+        lst = session.query(KinopoiskId).filter(KinopoiskId.kinopoisk_id == kinopoisk_id).first()
+        if lst == None:
+            session.add(id)
+            session.commit()
+            return True
+
+        session.close()
+        return False
+
+    def getLastId(self):
+        session = sessionmaker(bind=self.engine)()
+        last = session.query(KinopoiskId).order_by(KinopoiskId.kinopoisk_id.desc()).first()
+        if last == None:
+            return 1
+        session.close()
+        return last.kinopoisk_id
+
+
+class DataFunFilm(object):
 
     def __init__(self):
         self.meta = MetaData()
@@ -60,22 +101,14 @@ class DataBaseFunctions(object):
         lst = session.query(FilmDataBase).filter(FilmDataBase.kinopoisk_id == film.kinopoisk_id).first()
         if lst == None:
             session.add(film)
-            session.add(film)
             session.commit()
             return True
 
         session.close()
         return False
-    
-    
+
     def getLastId(self):
         session = sessionmaker(bind=self.engine)()
         last = session.query(FilmDataBase).order_by(FilmDataBase.kinopoisk_id.desc()).first()
         session.close()
         return last.kinopoisk_id
-
-
-
-
-
-
