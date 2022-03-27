@@ -1,2 +1,13 @@
 # Non-trivial_Films-DL
-Non-trivial film search project based on NLP
+
+Для запуска проекта используйте сборку контейнера
+
+```
+docker build -t your-name-image .
+```
+
+В данный момент докер запустит parser.py и будет брать данные из кинопоиска
+
+```
+  docker run new-container
+```
