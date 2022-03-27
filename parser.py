@@ -1,13 +1,13 @@
 from kinopoisk_unofficial.kinopoisk_api_client import KinopoiskApiClient
 from kinopoisk_unofficial.request.films.film_request import FilmRequest
 from constants import TOKEN
-from Database import DataBaseFunctions
+from Database import DataFunFilm
 import time
 
 
 def parser():
     api_client = KinopoiskApiClient(TOKEN)
-    filmDB = DataBaseFunctions()
+    filmDB = DataFunFilm()
     last_id = filmDB.getLastId()
     n = last_id + 1
     for i in range(last_id, n):
