@@ -1,5 +1,3 @@
-
-
 from sqlalchemy import create_engine, DateTime, func, Boolean, Float, PickleType, desc
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
 from sqlalchemy import Column, Integer, String
@@ -51,7 +49,7 @@ class DataBaseFunctions(object):
 
     def __init__(self):
         self.meta = MetaData()
-        self.engine = create_engine('sqlite:///../Database/films.db', echo=False)
+        self.engine = create_engine('sqlite:///Database/films.db', echo=False)
         Base.metadata.create_all(self.engine)
 
     def addFilm(self, response):
