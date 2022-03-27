@@ -1,7 +1,6 @@
-from kinopoisk_unofficial.kinopoisk_api_client import KinopoiskApiClient
-from kinopoisk_unofficial.request.films.film_request import FilmRequest
-from constants import TOKEN
-from sqlalchemy import create_engine, DateTime, func, Boolean, Float, PickleType
+
+
+from sqlalchemy import create_engine, DateTime, func, Boolean, Float, PickleType, desc
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
@@ -14,7 +13,7 @@ Base = declarative_base()
 class FilmDataBase(Base):
     __tablename__ = 'Kinopoisk_Films'
     id = Column(Integer, primary_key=True)
-    kinopoisk_Id = Column(Integer)
+    kinopoisk_id = Column(Integer)
     imdb_id = Column(Integer)
     name_ru = Column(String)
     name_original = Column(String)
@@ -32,7 +31,7 @@ class FilmDataBase(Base):
 
     def __init__(self, response):
         self.imdb_id = response.film.imdb_id
-        self.kinopoisk_Id = response.film.kinopoisk_id
+        self.kinopoisk_id = response.film.kinopoisk_id
         self.name_ru = response.film.name_ru
         self.name_original = response.film.name_original
         self.poster_url = response.film.poster_url
@@ -48,11 +47,11 @@ class FilmDataBase(Base):
         self.description = response.film.description
 
 
-class DataBaseAddition(object):
+class DataBaseFunctions(object):
 
     def __init__(self):
         self.meta = MetaData()
-        self.engine = create_engine('sqlite:///films.db', echo=False)
+        self.engine = create_engine('sqlite:///../Database/films.db', echo=False)
         Base.metadata.create_all(self.engine)
 
     def addFilm(self, response):
@@ -60,7 +59,7 @@ class DataBaseAddition(object):
 
         film = FilmDataBase(response)
 
-        lst = session.query(FilmDataBase).filter(FilmDataBase.kinopoisk_Id == film.kinopoisk_Id).first()
+        lst = session.query(FilmDataBase).filter(FilmDataBase.kinopoisk_id == film.kinopoisk_id).first()
         if lst == None:
             session.add(film)
             session.add(film)
@@ -69,25 +68,16 @@ class DataBaseAddition(object):
 
         session.close()
         return False
+    
+    
+    def getLastId(self):
+        session = sessionmaker(bind=self.engine)()
+        last = session.query(FilmDataBase).order_by(FilmDataBase.kinopoisk_id.desc()).first()
+        session.close()
+        return last.kinopoisk_id
 
 
-def main():
-    api_client = KinopoiskApiClient(TOKEN)
-    filmDB = DataBaseAddition()
-    for i in range(3127, 4000):
-        try:
-            time.sleep(0.1)
-            request = FilmRequest(i)
-            response = api_client.films.send_film_request(request)
-            response.film.genres
-            if filmDB.addFilm(response):
-                print('Added {}'.format(response.film.kinopoisk_id))
-            else:
-                print('Is in the database {}'.format(response.film.kinopoisk_id))
-
-        except Exception as error:
-            print('Id is not capable ' + str(error))
 
 
-if __name__ == '__main__':
-    main()
+
+
