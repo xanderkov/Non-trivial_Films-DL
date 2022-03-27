@@ -9,4 +9,4 @@ WORKDIR /root/docker
 
 COPY . /root/docker
 
-CMD ["python", "main.py"]
+CMD ["python", "parser.py"]

@@ -9,7 +9,7 @@ def parser():
     api_client = KinopoiskApiClient(TOKEN)
     filmDB = DataBaseFunctions()
     last_id = filmDB.getLastId()
-    n = last_id + 1000
+    n = last_id + 1
     for i in range(last_id, n):
         try:
             time.sleep(0.1)
