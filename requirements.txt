@@ -3,3 +3,5 @@ numpy
 SQLAlchemy
 lxml
 bs4
+selenium
+webdriver-manager
