@@ -1,3 +1,7 @@
 kinopoisk-api-unofficial-client
 numpy
 SQLAlchemy
+lxml
+bs4
+selenium
+webdriver-manager
