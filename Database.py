@@ -79,7 +79,7 @@ class DataFunId(object):
 
     def id_update(self, kinopoisk_id, status="done"):
         session = sessionmaker(bind=self.engine)()
-        lst = session.query(KinopoiskId).filter(KinopoiskId.status == kinopoisk_id).first()
+        lst = session.query(KinopoiskId).filter(KinopoiskId.kinopoisk_id == kinopoisk_id).first()
         lst.status = status
         session.commit()
         session.close()
@@ -88,13 +88,13 @@ class DataFunId(object):
     def get_id_to_pars(self):
         session = sessionmaker(bind=self.engine)()
 
-        lst = session.query(KinopoiskId).filter(KinopoiskId.status == 'redy')
+        lst = session.query(KinopoiskId).filter(KinopoiskId.status == "ready")
         lst_id = []
         for i in lst:
             lst_id.append(i.kinopoisk_id)
-
         session.close()
         return lst_id
+
 
     def getLastId(self):
         session = sessionmaker(bind=self.engine)()
