@@ -3,7 +3,6 @@ from api.kinopoisk_unofficial.request.films.film_request import FilmRequest
 from constants import TOKEN
 from Database import DataFunFilm,DataFunId
 import time
-import json
 
 
 def parser():
@@ -39,13 +38,11 @@ def parserInListId():
             else:
                 print('Id is already in the database {}'.format(i))
             idDB.id_update(i)
-            
-                
+
         except Exception as error:
             print('Id is not capable ' + str(error))
         if i % 20 == 0:
             time.sleep(1)
-
 
 
 if __name__ == '__main__':
