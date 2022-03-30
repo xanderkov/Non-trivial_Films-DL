@@ -39,9 +39,12 @@ def parserInListId():
             else:
                 print('Id is already in the database {}'.format(i))
             idDB.id_update(i)
+            
                 
         except Exception as error:
             print('Id is not capable ' + str(error))
+        if i % 20 == 0:
+            time.sleep(1)
 
 
 
