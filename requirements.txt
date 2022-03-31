@@ -9,3 +9,4 @@ requests
 apischema
 beautifulsoup4
 pandas
+gensim
