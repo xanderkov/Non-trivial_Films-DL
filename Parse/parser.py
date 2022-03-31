@@ -1,7 +1,7 @@
 from kinopoisk_unofficial.kinopoisk_api_client import KinopoiskApiClient
 from kinopoisk_unofficial.request.films.film_request import FilmRequest
-from constants import TOKEN
-from Database import DataFunFilm,DataFunId
+from Parse.constants import TOKEN
+from Database import DataFunFilm, DataFunId
 import time
 
 
@@ -14,7 +14,6 @@ def parser():
         try:
             request = FilmRequest(i)
             response = api_client.films.send_film_request(request)
-            response.film.genres
             if filmDB.addFilm(response):
                 print('Added {}'.format(response.film.kinopoisk_id))
             else:
@@ -32,7 +31,6 @@ def parserInListId():
         try:
             request = FilmRequest(i)
             response = api_client.films.send_film_request(request)
-            response.film.genres
             if filmDB.addFilm(response):
                 print('Added {}'.format(i))
             else:
