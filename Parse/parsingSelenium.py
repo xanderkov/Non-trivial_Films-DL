@@ -29,13 +29,9 @@ if __name__ == '__main__':
                 print("{} ready".format(raw_id))
             else:
                 print("{} already in DB".format(raw_id))
-        # content = driver.find_element(by=By.XPATH, value="//*[@class='item _NO_HIGHLIGHT_']")
         driver.get(
             "https://www.kinopoisk.ru/top/navigator/m_act[num_vote]/100/m_act[rating]/1%3A/order/rating/page/{}/#results".format(i))
         with open("lastpage.txt", 'w') as f_out:
             f_out.write(str(i))
         time.sleep(3)
         soup = BeautifulSoup(driver.page_source, 'lxml')
-
-
-

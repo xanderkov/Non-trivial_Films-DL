@@ -4,3 +4,8 @@ lxml
 bs4
 selenium
 webdriver-manager
+jupyter
+requests
+apischema
+beautifulsoup4
+pandas
