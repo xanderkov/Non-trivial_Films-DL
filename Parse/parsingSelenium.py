@@ -1,7 +1,7 @@
 import time
 from selenium import webdriver
 from bs4 import BeautifulSoup
-from Database import DataFunId
+from Database.Database import DataFunId
 from Parse.constants import PATH_CHROME
 
 options = webdriver.ChromeOptions()

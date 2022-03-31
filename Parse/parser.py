@@ -1,7 +1,7 @@
 from kinopoisk_unofficial.kinopoisk_api_client import KinopoiskApiClient
 from kinopoisk_unofficial.request.films.film_request import FilmRequest
 from Parse.constants import TOKEN
-from Database import DataFunFilm, DataFunId
+from Database.Database import DataFunFilm, DataFunId
 import time
 
 
