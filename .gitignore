@@ -3,3 +3,4 @@ venv
 .idea
 __pycache__
 Parse/constants.py
+models
