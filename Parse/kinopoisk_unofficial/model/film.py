@@ -9,9 +9,9 @@ from kinopoisk_unofficial.model.genre import Genre
 
 @dataclass
 class Film:
-    kinopoisk_id: Optional[int] = None
+    kinopoisk_id: int = None
     imdb_id: Optional[str] = None
-    name_ru: Optional[str] = None
+    name_ru: str = None
     coverUrl: Optional[str] = None
     name_en: Optional[Union[str, None]] = None
     name_original: Optional[str] = None
@@ -43,7 +43,7 @@ class Film:
     end_year: Optional[Union[int, None]] = None
     web_url: Optional[str] = None
     slogan: Optional[str] = None
-    description: Optional[str] = None
+    description: str = None
     short_description: Optional[str] = None
     editor_annotation: Optional[str] = None
     rating_mpaa: Optional[str] = None
