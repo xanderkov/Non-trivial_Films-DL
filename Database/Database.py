@@ -1,3 +1,5 @@
+from ast import Str
+from numpy import short
 from sqlalchemy import create_engine, DateTime, func, Boolean, Float, PickleType, desc
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
 from sqlalchemy import Column, Integer, String
@@ -8,6 +10,12 @@ import re
 
 Base = declarative_base()
 
+def fixGenres(genre):
+    orig_gen = re.findall(r'\'(\w+)\'', genre)
+    if orig_gen != []:
+        fix_gen = " ".join(orig_gen)
+        genre = fix_gen
+    return genre
 
 class FilmDataBase(Base):
     __tablename__ = 'Kinopoisk_Films'
@@ -27,6 +35,9 @@ class FilmDataBase(Base):
     web_url = Column(String)
     slogan = Column(String)
     description = Column(String)
+    rating_kinopoisk = Column(Integer)
+    short_desription = Column(String)
+    rating_age_limits = Column(Integer)
 
     def __init__(self, response):
         self.imdb_id = response.film.imdb_id
@@ -40,10 +51,15 @@ class FilmDataBase(Base):
         self.rating_critics_vote_count = response.film.rating_film_critics_vote_count
         self.year = response.film.year
         self.film_length = response.film.film_length
-        self.genres = ' '.join([str(item) for item in response.film.genres])
+        self.genres = fixGenres(' '.join([str(item) for item in response.film.genres]))
         self.web_url = response.film.web_url
         self.slogan = response.film.slogan
         self.description = response.film.description
+        self.rating_kinopoisk = response.film.rating_kinopoisk
+        self.short_desription = response.film.short_description
+        self.rating_age_limits = response.film.rating_age_limits
+        
+        
 
 
 class KinopoiskId(Base):

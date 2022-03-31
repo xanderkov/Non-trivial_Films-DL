@@ -1,5 +1,5 @@
-from kinopoisk_unofficial.kinopoisk_api_client import KinopoiskApiClient
-from kinopoisk_unofficial.request.films.film_request import FilmRequest
+from Parse.kinopoisk_unofficial.kinopoisk_api_client import KinopoiskApiClient
+from Parse.kinopoisk_unofficial.request.films.film_request import FilmRequest
 from Parse.constants import TOKEN
 from Database.Database import DataFunFilm, DataFunId
 import time
