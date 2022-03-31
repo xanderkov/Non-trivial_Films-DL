@@ -3,7 +3,8 @@ from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, backref, Query
-import time
+import pandas as pd
+import re
 
 Base = declarative_base()
 
@@ -84,7 +85,6 @@ class DataFunId(object):
         session.commit()
         session.close()
 
-
     def get_id_to_pars(self):
         session = sessionmaker(bind=self.engine)()
 
@@ -94,7 +94,6 @@ class DataFunId(object):
             lst_id.append(i.kinopoisk_id)
         session.close()
         return lst_id
-
 
     def getLastId(self):
         session = sessionmaker(bind=self.engine)()
@@ -131,3 +130,22 @@ class DataFunFilm(object):
         last = session.query(FilmDataBase).order_by(FilmDataBase.kinopoisk_id.desc()).first()
         session.close()
         return last.kinopoisk_id
+
+    def getTableDF(self):
+        df = pd.read_sql('SELECT * FROM Kinopoisk_Films', self.engine)
+        return df
+
+    def fexGenres(self):
+        session = sessionmaker(bind=self.engine)()
+        lst = session.query(FilmDataBase)
+        for film in lst:
+            orig_gen = re.findall(r'\'(\w+)\'', film.genres)
+            if orig_gen != []:
+                fix_gen = " ".join(orig_gen)
+                film.genres = fix_gen
+        session.commit()
+        session.close()
+
+if __name__ == '__main__':
+    db = DataFunFilm()
+    db.fexGenres()
