@@ -2,8 +2,7 @@ import time
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from Database import DataFunId
-from webdriver_manager.chrome import ChromeDriverManager
-from constants import PATH_CHROME
+from Parse.constants import PATH_CHROME
 
 options = webdriver.ChromeOptions()
 options.binary_location = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"

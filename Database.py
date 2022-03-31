@@ -60,7 +60,7 @@ class DataFunId(object):
 
     def __init__(self):
         self.meta = MetaData()
-        self.engine = create_engine('sqlite:///Database/films.db', echo=False)
+        self.engine = create_engine('sqlite:///../Database/films.db', echo=False)
         Base.metadata.create_all(self.engine)
 
     def add_link(self, kinopoisk_id, status):
@@ -109,7 +109,7 @@ class DataFunFilm(object):
 
     def __init__(self):
         self.meta = MetaData()
-        self.engine = create_engine('sqlite:///Database/films.db', echo=False)
+        self.engine = create_engine('sqlite:///../Database/films.db')
         Base.metadata.create_all(self.engine)
 
     def addFilm(self, response):
