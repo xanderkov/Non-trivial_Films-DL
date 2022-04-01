@@ -162,6 +162,20 @@ class DataFunFilm(object):
         session.commit()
         session.close()
 
+    def remakeDescriprionToArray(self):
+        session = sessionmaker(bind=self.engine)()
+        lst = session.query(FilmDataBase)
+        description_array = []
+        for film in lst:
+            separeted = re.split(" ", film.description)
+            words = []
+            for word in separeted:
+                words.append(word.lower())
+            description_array.append(words)
+        session.commit()
+        session.close()
+        return description_array
+
 if __name__ == '__main__':
     db = DataFunFilm()
-    db.fexGenres()
+    db.remakeDescriprionToArray()
