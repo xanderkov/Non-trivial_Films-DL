@@ -10,3 +10,5 @@ apischema
 beautifulsoup4
 pandas
 gensim
+pyemd
+ufal.udpipe
