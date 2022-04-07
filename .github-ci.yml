@@ -1,0 +1,36 @@
+image: python:latest
+
+# This folder is cached between builds (http://docs.gitlab.com/ce/ci/yaml/README.html#cache)
+cache:
+  paths:
+  - ~/.cache/pip/
+
+before_script:
+  - python -V
+
+stages:
+  - test
+  - style
+  - docs
+  - deploy
+
+pep8:
+  stage: style
+  before_script:
+  - pip install -r requirements.txt
+  script:
+  - ./ci/pycodestyle_runner.sh
+  artifacts:
+    paths:
+      - public/pycodestyle.txt
+
+pylint:
+  stage: style
+  before_script:
+  - pip install -r requirements.txt
+  script:
+  - ./ci/pylint_runner.sh
+  artifacts:
+    paths:
+      - public/pylint.svg
+      - public/pylint.html
