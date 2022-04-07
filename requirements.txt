@@ -12,3 +12,10 @@ pandas
 gensim
 pyemd
 ufal.udpipe
+django
+django-allauth
+pytz
+dj-static
+requests
+coverage
+django-docs
