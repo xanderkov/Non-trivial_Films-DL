@@ -19,5 +19,4 @@ jobs:
         pip install -r requirements.txt
     - name: Analysing the code with pylint
       run: |
-        find . -name 'src/*.py' -exec pylint {} \;
-        find . -name 'Parse/*.py' -exec pylint {} \;
+        pylint $(ls -d */) | tee pylint.txt
