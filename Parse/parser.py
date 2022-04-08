@@ -2,6 +2,7 @@ from Parse.kinopoisk_unofficial.kinopoisk_api_client import KinopoiskApiClient
 from Parse.kinopoisk_unofficial.request.films.film_request import FilmRequest
 from Parse.constants import TOKEN
 from Database.Database import DataFunFilm, DataFunId
+from Handlers.preProc import PrepText
 import time
 
 
@@ -27,11 +28,12 @@ def parserInListId():
     filmDB = DataFunFilm()
     idDB = DataFunId()
     id_lst = idDB.get_id_to_pars()
+    prep = PrepText()
     for i in id_lst:
         try:
             request = FilmRequest(i)
             response = api_client.films.send_film_request(request)
-            if filmDB.addFilm(response):
+            if filmDB.addFilm(response, prep):
                 print('Added {}'.format(i))
             else:
                 print('Id is already in the database {}'.format(i))

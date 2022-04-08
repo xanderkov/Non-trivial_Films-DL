@@ -7,8 +7,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, backref, Query
 import pandas as pd
 import re
+from sqlalchemy import or_, and_
 
 Base = declarative_base()
+
 
 def fixGenres(genre):
     orig_gen = re.findall(r'\'(\w+)\'', genre)
@@ -16,6 +18,7 @@ def fixGenres(genre):
         fix_gen = " ".join(orig_gen)
         genre = fix_gen
     return genre
+
 
 class FilmDataBase(Base):
     __tablename__ = 'Kinopoisk_Films'
@@ -38,8 +41,9 @@ class FilmDataBase(Base):
     rating_kinopoisk = Column(Integer)
     short_desription = Column(String)
     rating_age_limits = Column(Integer)
+    prepare_description = Column(String)
 
-    def __init__(self, response):
+    def __init__(self, response, prep):
         self.imdb_id = response.film.imdb_id
         self.kinopoisk_id = response.film.kinopoisk_id
         self.name_ru = response.film.name_ru
@@ -58,8 +62,20 @@ class FilmDataBase(Base):
         self.rating_kinopoisk = response.film.rating_kinopoisk
         self.short_desription = response.film.short_description
         self.rating_age_limits = response.film.rating_age_limits
+        self.prepare_description = prep.tag_ud(response.film.description)
         
         
+class FilmDistTable(Base):
+    __tablename__ = 'Film_Dist_Table'
+    id = Column(Integer, primary_key=True)
+    id_first = Column(Integer)
+    id_second = Column(Integer)
+    distance = Column(Float)
+
+    def __init__(self, id_first, id_second, distance):
+        self.id_first = id_first
+        self.id_second = id_second
+        self.distance = distance
 
 
 class KinopoiskId(Base):
@@ -86,7 +102,7 @@ class DataFunId(object):
         id = KinopoiskId(kinopoisk_id, status)
 
         lst = session.query(KinopoiskId).filter(KinopoiskId.kinopoisk_id == kinopoisk_id).first()
-        if lst == None:
+        if lst is None:
             session.add(id)
             session.commit()
             return True
@@ -141,6 +157,12 @@ class DataFunFilm(object):
         session.close()
         return False
 
+    def getFilmById(self, id):
+        session = sessionmaker(bind=self.engine)()
+        film = session.query(FilmDataBase).filter(FilmDataBase.kinopoisk_id == id).first()
+        session.close()
+        return film
+
     def getLastId(self):
         session = sessionmaker(bind=self.engine)()
         last = session.query(FilmDataBase).order_by(FilmDataBase.kinopoisk_id.desc()).first()
@@ -176,6 +198,34 @@ class DataFunFilm(object):
         session.close()
         return description_array
 
+    def addPrepDescription(self, id, descrp):
+        session = sessionmaker(bind=self.engine)()
+        film = session.query(FilmDataBase).filter(FilmDataBase.kinopoisk_id == id).first()
+        if film is None:
+            return False
+        film.prepare_description = descrp
+        session.commit()
+        session.close()
+        return True
+
+
+class DataFunDist(object):
+
+    def __init__(self):
+        self.meta = MetaData()
+        self.engine = create_engine('sqlite:///../Database/films.db')
+        Base.metadata.create_all(self.engine)
+
+    def addDistance(self, first, distance):
+        session = sessionmaker(bind=self.engine)()
+
+        for i in distance:
+            dist = FilmDistTable(first, i[1], i[0])
+            session.add(dist)
+
+        session.commit()
+        session.close()
+
+
 if __name__ == '__main__':
     db = DataFunFilm()
-    db.remakeDescriprionToArray()

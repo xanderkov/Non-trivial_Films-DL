@@ -1,12 +1,12 @@
 from ufal.udpipe import Model, Pipeline
-import os
-import re
 import sys
+from tqdm import tqdm
+from Database.Database import DataFunFilm
 
 
-class PrepText():
+class PrepText(object):
     def __init__(self):
-        print('\nLoading the model...', file=sys.stderr)
+        print('\nLoading the model teging', file=sys.stderr)
         self.model = Model.load("udpipe_syntagrus.model")
 
     def num_replace(self, word):
@@ -109,6 +109,15 @@ class PrepText():
         ret = " ".join(output)
         return ret
 
+
+def prep_db(films, prep, db):
+    print('\nPreparing description', file=sys.stderr)
+    for i in tqdm(films):
+        db.addPrepDescription(i[1], prep.tag_ud(i[0]))
+
+
 if __name__ == '__main__':
+    dbFilm = DataFunFilm()
+    films = dbFilm.getTableDF()
     prep = PrepText()
-    print(prep.tag_ud())
+    prep_db(list(zip(list(films["description"]), list(films["kinopoisk_id"]))),prep,dbFilm)
