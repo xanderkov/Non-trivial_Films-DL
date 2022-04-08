@@ -12,6 +12,7 @@ pandas
 gensim
 pyemd
 ufal.udpipe
+tqdm
 django
 requests
 coverage
