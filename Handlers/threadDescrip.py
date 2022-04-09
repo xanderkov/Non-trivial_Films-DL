@@ -3,29 +3,35 @@ import pickle
 import threading
 from Database.Database import DataFunFilm, DataFunDist
 from Descriptions import Model
-from queue import Queue
+from multiprocessing import Pool, Manager
 from tqdm import tqdm
 import time
 
 
-class DThread(threading.Thread):
-    def __init__(self, id, prepDisc, model, descript_list, q):
-        threading.Thread.__init__(self)
-        self.id = id
-        self.prepDisc = prepDisc
-        self.model = model
-        self.descript_list = descript_list
-        self.q = q
+def run(id, prepDisc, model, descript_list, q):
+    lst = []
+    for i in descript_list:
+        if i[0] != id:
+            d = model.getDistance(i[1], prepDisc)
+            if not (math.isinf(d)):
+                lst.append([d, i[0]])
 
-    def run(self):
-        lst = []
-        for i in self.descript_list:
-            if i[0] != self.id:
-                d = self.model.getDistance(i[1], self.prepDisc)
-                if not (math.isinf(d)):
-                    lst.append([d, i[0]])
+    q.put(lst)
 
-        self.q.put(lst)
+
+def distance(main_desc, id, desc, model):
+    d = model.getDistance(main_desc, desc)
+    return [d, id]
+
+# def distance(main_desc, id, desc, model, q):
+#     d = model.getDistance(main_desc, desc)
+#     if not (math.isinf(d)):
+#         q.put([d, id])
+
+# def distance(task):
+#     d = task[3].getDistance(task[0], task[2])
+#     if not (math.isinf(d)):
+#         return [d, task[1]]
 
 
 def split_list(lst, parts=1):
@@ -38,41 +44,50 @@ def split_list(lst, parts=1):
 
 
 def thread_dist(id, descr, films, model, num_thread):
-    films_split = split_list(films, num_thread)
-    q = Queue()
-    threads = []
-    for i in range(num_thread):
-        threads.append(DThread(id, descr, model, films_split[i], q))
+    q = Manager().Queue()
+    # task = [[], [], [], []]
+    # for i in films:
+    #     if i[0] != id:
+    #         task[0].append(descr)
+    #         task[1].append(i[0])
+    #         task[2].append(i[1])
+    #         task[3].append(model)
 
-    for t in threads:
-        t.start()
+    # task = []
+    # for i in films:
+    #     if i[0] != id:
+    #         task.append([descr, i[0], i[1], model, q])
+    task = []
+    for i in films:
+        if i[0] != id:
+            task.append([descr, i[0], i[1], model])
 
-    for t in threads:
-        t.join()
-
-    lst = []
-    for i in q.queue:
-        lst.extend(i)
+    # print(list(map(distance, task[0], task[1], task[2], task[3])))
+    with Pool(processes=num_thread) as pool:
+        # pool.starmap(distance, task[0], task[1], task[2], task[3], q)
+        lst = pool.starmap(distance, task)
+        # pool.close()
+        # pool.join()
+        # multiple_results = pool.apply_async(distance, task[0], task[1], task[2], task[3])
+        # lst = multiple_results.get()
+        # multiple_results = [pool.apply_async(distance, task[0], task[1], task[2], task[3]) for i in range(num_thread)]
+        # lst = [res.get() for res in multiple_results]
+    # lst = q.get()
     lst.sort(key=lambda x: x[0])
-    lst = lst[:100]
+    lst = lst[:10]
     return lst
 
 
 def prep_dist(films, model, db):
     with open('done_ids.txt', 'r') as f:
         done_ids = [int(x) for x in f.read().split()]
-    with open('done_ids.txt', 'a') as f:
         for i in tqdm(films):
             if not (i[0] in done_ids):
-                timing = time.time()
-                dist = thread_dist(i[0], i[1], films, model, 2)
-                print("\n")
-                print(time.time() - timing)
-                break
-                # db.addDistance(i[0], dist)
-                f.write(" "+i[0])
-                pickle.dump(done_ids, f)
-    f.close()
+                with open('done_ids.txt', 'a') as f:
+                    dist = thread_dist(i[0], i[1], films, model, 7)
+                    db.addDistance(i[0], dist)
+                    f.write(" " + str(i[0]))
+                f.close()
 
 
 if __name__ == "__main__":
