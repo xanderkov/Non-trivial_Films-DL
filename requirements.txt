@@ -24,3 +24,4 @@ dj-static
 requests
 django-recaptcha2
 sphinx_bootstrap_theme
+nltk
