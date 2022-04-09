@@ -7,9 +7,31 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, backref, Query
 import pandas as pd
 import re
+import yadisk
+from zipfile import ZipFile
+from constants import YANDEX_TOKEN
 from sqlalchemy import or_, and_
 
 Base = declarative_base()
+
+
+def dispatch():
+    zipObj = ZipFile('db.zip', 'w')
+    zipObj.write('films.db')
+    zipObj.close()
+    print("ziped")
+    y = yadisk.YaDisk(token=YANDEX_TOKEN)
+    y.upload("db.zip", "/Non-trivial_Films-DL/db.zip")
+    print("uploaded")
+
+
+def download():
+    y = yadisk.YaDisk(token=YANDEX_TOKEN)
+    y.download("/Non-trivial_Films-DL/db.zip", "db.zip")
+    print("downloaded")
+    z = ZipFile('db.zip', 'r')
+    z.extractall()
+    print("unzipped")
 
 
 def fixGenres(genre):
@@ -228,4 +250,4 @@ class DataFunDist(object):
 
 
 if __name__ == '__main__':
-    db = DataFunFilm()
+    download()
