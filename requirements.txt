@@ -13,3 +13,14 @@ gensim
 pyemd
 ufal.udpipe
 tqdm
+django
+requests
+coverage
+pylint
+django-docs
+django-allauth
+pytz
+dj-static
+requests
+django-recaptcha2
+sphinx_bootstrap_theme

@@ -6,7 +6,7 @@
 docker build -t your-name-image .
 ```
 
-В данный момент докер запустит parser.py и будет брать данные из кинопоиска
+Докер запустит сайт с поиском фильмов
 
 ```
 docker run your-name-image
