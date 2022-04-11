@@ -9,7 +9,7 @@ import pandas as pd
 import re
 import yadisk
 from zipfile import ZipFile
-from constants import YANDEX_TOKEN
+from Database.constants import YANDEX_TOKEN
 from sqlalchemy import or_, and_
 
 Base = declarative_base()
@@ -22,7 +22,7 @@ def dispatch():
     print("ziped")
     y = yadisk.YaDisk(token=YANDEX_TOKEN)
     y.upload("db.zip", "/Non-trivial_Films-DL/db.zip")
-    print("uploaded")
+    print("uploaded") 
 
 
 def download():
