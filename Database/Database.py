@@ -250,4 +250,4 @@ class DataFunDist(object):
 
 
 if __name__ == '__main__':
-    download()
+    dispatch()
