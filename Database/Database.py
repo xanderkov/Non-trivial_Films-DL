@@ -16,20 +16,20 @@ Base = declarative_base()
 
 
 def dispatch():
-    zipObj = ZipFile('db.zip', 'w')
+    zipObj = ZipFile('films.zip', 'w')
     zipObj.write('films.db')
     zipObj.close()
     print("ziped")
     y = yadisk.YaDisk(token=YANDEX_TOKEN)
-    y.upload("db.zip", "/Non-trivial_Films-DL/db.zip")
-    print("uploaded") 
+    y.upload("films.zip", "/Non-trivial_Films-DL/films.zip")
+    print("uploaded")
 
 
 def download():
     y = yadisk.YaDisk(token=YANDEX_TOKEN)
-    y.download("/Non-trivial_Films-DL/db.zip", "db.zip")
+    y.download("/Non-trivial_Films-DL/films.zip", "films.zip")
     print("downloaded")
-    z = ZipFile('db.zip', 'r')
+    z = ZipFile('films.zip', 'r')
     z.extractall()
     print("unzipped")
 
