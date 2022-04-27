@@ -248,6 +248,16 @@ class DataFunDist(object):
         session.commit()
         session.close()
 
+    def getDistanceById(self, id):
+        session = sessionmaker(bind=self.engine)()
+
+        distances = session.query(FilmDistTable).filter(or_(FilmDistTable.id_first == id, FilmDistTable.second == id))
+
+        lst = []
+        for i in distances:
+            lst.append(i.distance)
+        session.close()
+
 
 if __name__ == '__main__':
     dispatch()
