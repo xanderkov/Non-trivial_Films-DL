@@ -1,4 +1,6 @@
 import math
+import os
+
 import gensim
 import wget
 import zipfile
@@ -10,14 +12,16 @@ import pickle
 class Model(object):
     model_url = 'http://vectors.nlpl.eu/repository/20/220.zip'
 
-    def __init__(self):
-        model_file = self.model_url.split('/')[-1]
-        with zipfile.ZipFile(model_file, 'r') as archive:
-            stream = archive.open('model.bin')
-            self.model = gensim.models.KeyedVectors.load_word2vec_format(stream, binary=True)
-
     def download(self):
         wget.download(self.model_url)
+
+    def __init__(self):
+        if not os.path.exists("220.zip"):
+            self.download()
+        if not os.path.exists("model/model.bin"):
+            z = zipfile.ZipFile('220.zip', 'r')
+            z.extractall("model")
+        self.model = gensim.models.KeyedVectors.load_word2vec_format("model/model.bin", binary=True)
 
     def getDistance(self, first, second):
         return self.model.wmdistance(first, second,  norm=True)
@@ -63,4 +67,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    m = Model()
