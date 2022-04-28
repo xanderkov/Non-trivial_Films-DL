@@ -19,9 +19,12 @@ def start(m):
 @bot.message_handler(content_types=["text"])
 def handle_text(message):
     films = find_film(message.text)
-    for film in films:
-        answer = film[0] + "\n" + film[1]
-        bot.send_message(message.chat.id, answer)
+    if films != None:
+        for film in films:
+            answer = film[0] + "\n" + film[1]
+            bot.send_message(message.chat.id, answer)
+    else:
+        bot.send_message(message.chat.id, "Такого фильма в базе данных нет(")
 
 
 bot.polling(none_stop=True, interval=0)

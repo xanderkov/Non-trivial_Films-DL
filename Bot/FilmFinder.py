@@ -1,6 +1,7 @@
 from Database.Database import DataFunFilm, DataFunDist
 from Handlers.Descriptions import Model
 from tqdm import tqdm
+import math
 
 
 def distance(main_desc, id, desc, model):
@@ -8,20 +9,20 @@ def distance(main_desc, id, desc, model):
     return [d, id]
 
 
-def get_distrance(id, descr, films, model):
-    task = []
+def get_distance(id, descr, films, model):
     lst = []
-    for i in films:
+    descr = descr.split()
+    for i in tqdm(films):
         if i[0] != id:
-            lst.append(distance(descr, i[0], i[1], model))
-
+            d = model.getDistance(i[1], descr)
+            lst.append([d, i[0]])
     lst.sort(key=lambda x: x[0])
     lst = lst[:10]
     return lst
 
 
 def prep_dist(films, model, film):
-    distance = get_distrance(film.kinopoisk_id, film.description, films, model)
+    distance = get_distance(film.kinopoisk_id, film.prepare_description, films, model)
     dbFilm = DataFunFilm()
     nearest_films = []
     for i in distance:
@@ -37,11 +38,13 @@ def find_film(filmName):
     film = dbFilm.getFilmByName(filmName)
     if film == None:
         film = dbFilm.getFilmByUrl(filmName)
-    prepDisc = []
-    for i in films["prepare_description"]:
-        prepDisc.append(i.split())
-    films["prepare_description"] = prepDisc
-    return prep_dist(list(zip(list(films["kinopoisk_id"]), list(films["prepare_description"]))), model, film)
+    if film != None:
+        prepDisc = []
+        for i in films["prepare_description"]:
+            prepDisc.append(i.split())
+        films["prepare_description"] = prepDisc
+        return prep_dist(list(zip(list(films["kinopoisk_id"]), list(films["prepare_description"]))), model, film)
+    return None
 
 
 if __name__ == "__main__":
