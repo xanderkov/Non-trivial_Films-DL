@@ -230,6 +230,19 @@ class DataFunFilm(object):
         session.close()
         return True
 
+    def getFilmByName(self, name):
+        session = sessionmaker(bind=self.engine)()
+        film = session.query(FilmDataBase).filter(FilmDataBase.name_ru == name).first()
+        session.close()
+        return film
+
+
+    def getFilmByUrl(self, url):
+        session = sessionmaker(bind=self.engine)()
+        film = session.query(FilmDataBase).filter(FilmDataBase.web_url == url).first()
+        session.close()
+        return film
+
 
 class DataFunDist(object):
 
@@ -260,4 +273,4 @@ class DataFunDist(object):
 
 
 if __name__ == '__main__':
-    dispatch()
+    download()

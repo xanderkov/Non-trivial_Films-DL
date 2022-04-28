@@ -20,6 +20,8 @@ def start(m):
 def handle_text(message):
     films = find_film(message.text)
     for film in films:
-        bot.send_message(message.chat.id, film)
+        answer = film[0] + "\n" + film[1]
+        bot.send_message(message.chat.id, answer)
+
 
 bot.polling(none_stop=True, interval=0)

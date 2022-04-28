@@ -21,15 +21,13 @@ def get_distrance(id, descr, films, model):
 
 
 def prep_dist(films, model, film):
-
     distance = get_distrance(film.kinopoisk_id, film.description, films, model)
     dbFilm = DataFunFilm()
-    films_base = dbFilm.getTableDF()
-    near_films = []
+    nearest_films = []
     for i in distance:
         film_i = dbFilm.getFilmById(i[1])
-        near_films.append(film_i.name_ru)
-    return near_films
+        nearest_films.append([film_i.name_ru, film_i.web_url])
+    return nearest_films
 
 
 def find_film(filmName):
@@ -37,8 +35,14 @@ def find_film(filmName):
     films = dbFilm.getTableDF()
     model = Model()
     film = dbFilm.getFilmByName(filmName)
+    if film == None:
+        film = dbFilm.getFilmByUrl(filmName)
     prepDisc = []
     for i in films["prepare_description"]:
         prepDisc.append(i.split())
     films["prepare_description"] = prepDisc
     return prep_dist(list(zip(list(films["kinopoisk_id"]), list(films["prepare_description"]))), model, film)
+
+
+if __name__ == "__main__":
+    find_film("Матрица")
