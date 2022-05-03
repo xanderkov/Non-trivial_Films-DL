@@ -26,5 +26,7 @@ sphinx_bootstrap_theme
 nltk
 yadisk
 wget
+tensorflow
+pyTelegramBotAPI
 torch
 faiss-cpu
