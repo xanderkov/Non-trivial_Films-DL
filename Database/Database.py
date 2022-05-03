@@ -251,12 +251,18 @@ class DataFunDist(object):
     def getDistanceById(self, id):
         session = sessionmaker(bind=self.engine)()
 
-        distances = session.query(FilmDistTable).filter(or_(FilmDistTable.id_first == id, FilmDistTable.second == id))
+        distances = session.query(FilmDistTable).filter(or_(FilmDistTable.id_first == id,
+                                                            FilmDistTable.id_second == id))
 
         lst = []
         for i in distances:
-            lst.append(i.distance)
+            if id == i.id_first:
+                lst.append([i.id_second, i.distance])
+            elif id == i.id_second:
+                lst.append([i.id_first, i.distance])
+
         session.close()
+        return lst
 
 
 if __name__ == '__main__':

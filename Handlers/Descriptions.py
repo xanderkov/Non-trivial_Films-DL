@@ -1,6 +1,5 @@
 import math
 import os
-
 import gensim
 import wget
 import zipfile
