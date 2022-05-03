@@ -30,3 +30,4 @@ tensorflow
 pyTelegramBotAPI
 torch
 faiss-cpu
+sentence_transformers
